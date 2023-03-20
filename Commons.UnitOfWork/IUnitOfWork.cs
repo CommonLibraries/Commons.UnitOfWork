@@ -4,7 +4,7 @@ namespace Commons.UnitOfWork
 {
     public interface IUnitOfWork : IDisposable, IAsyncDisposable
     {
-        IDbConnection Conection { get; }
+        IDbConnection Connection { get; }
         IDbTransaction Transaction { get; }
         IDbCommand CreateCommand(string commandText = "");
 
