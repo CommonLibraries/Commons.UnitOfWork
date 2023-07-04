@@ -1,6 +1,6 @@
 ﻿namespace Commons.UnitOfWork
 {
-    public interface IUnitOfWorkFactory
+    public interface IUnitOfWorkContext
     {
         IUnitOfWork Create();
         Task<IUnitOfWork> CreateAsync(CancellationToken cancellationToken = default);

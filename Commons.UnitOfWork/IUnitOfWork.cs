@@ -4,8 +4,8 @@ namespace Commons.UnitOfWork
 {
     public interface IUnitOfWork : IDisposable, IAsyncDisposable
     {
-        IDbConnection Connection { get; }
-        IDbTransaction Transaction { get; }
+        bool IsDisposed { get; }
+
         IDbCommand CreateCommand(string commandText = "");
 
         void Begin(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
@@ -16,5 +16,10 @@ namespace Commons.UnitOfWork
 
         void Rollback();
         Task RollbackAsync(CancellationToken cancellationToken = default);
+    }
+
+    public abstract class Repository<TEntity> where TEntity : class
+    {
+
     }
 }
