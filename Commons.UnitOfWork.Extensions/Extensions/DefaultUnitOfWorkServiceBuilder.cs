@@ -29,15 +29,11 @@ namespace Commons.UnitOfWork.Extensions
 
         public IServiceCollection Done()
         {
-            services.TryAddScoped<IUnitOfWork>(serviceProvider =>
-            {
-                var uowFactory = serviceProvider.GetRequiredService<IUnitOfWorkFactory>();
-                return uowFactory.Create();
+            services.TryAddScoped<IConnectionContext>(serviceProvider => {
+                return new ConnectionContext(this.invariantName, this.connectionString);
             });
-            services.TryAddSingleton<IUnitOfWorkFactory>((serviceProvider) =>
-            {
-                return new UnitOfWorkFactory(invariantName, connectionString);
-            });
+            services.TryAddScoped<ITransactionContext, TransactionContext>();
+            services.TryAddScoped<IUnitOfWorkContext, UnitOfWorkContext>();
             return services;
         }
     }

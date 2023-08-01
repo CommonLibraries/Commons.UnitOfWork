@@ -8,37 +8,46 @@ namespace Commons.UnitOfWork
     {
         private IUnitOfWork? unitOfWork;
 
-        private IConnectionContext connectionContext;
+        private readonly IConnectionContext connectionContext;
+        private readonly ITransactionContext transactionContext;
 
-        public UnitOfWorkContext(IConnectionContext connectionContext)
+        public UnitOfWorkContext(IConnectionContext connectionContext, ITransactionContext transactionContext)
         {
             this.connectionContext = connectionContext;
+            this.transactionContext = transactionContext;
         }
 
-        public IUnitOfWork Create()
+        public IUnitOfWork Create(IsolationLevel isolationLevel)
         {
             if (this.unitOfWork is not null && !this.unitOfWork.IsDisposed)
             {
                 throw new InvalidOperationException("There is an existing Unit of Work.");
             }
 
-            var unitOfWork = new UnitOfWork();
-            return unitOfWork;
+            if (this.connectionContext.GetConnection() is not DbConnection connection)
+            {
+                throw new InvalidCastException($"The connection does not inherit {nameof(DbConnection)} class.");
+            }
+
+            var transaction = connection.BeginTransaction(isolationLevel);
+            this.transactionContext.SetTransaction(transaction);
+
+            this.unitOfWork = new UnitOfWork(this.connectionContext, this.transactionContext);
+            return this.unitOfWork;
         }
 
-        public async Task<IUnitOfWork> CreateAsync(CancellationToken cancellationToken = default)
+        public async Task<IUnitOfWork> CreateAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
         {
-            this.connection = this.dbProviderFactory.CreateConnection();
-            this.connection!.ConnectionString = this.connectionString;
+            if (await this.connectionContext.GetConnectionAsync(cancellationToken)
+                        is not DbConnection connection) {
+                throw new InvalidCastException($"The connection does not inherit {nameof(DbConnection)} class.");
+            }
+
+            var transaction = await connection.BeginTransactionAsync(isolationLevel, cancellationToken);
+            this.transactionContext.SetTransaction(transaction);
             
-            if (this.connection as DbConnection is null)
-            {
-                throw new NotSupportedException("");
-            }            
-            await (this.connection as DbConnection)!.OpenAsync(cancellationToken);
-            
-            var unitOfWork = new UnitOfWork(this.connection!);
-            return unitOfWork;
+            this.unitOfWork = new UnitOfWork(this.connectionContext, this.transactionContext);
+            return this.unitOfWork;
         }
     }
 }

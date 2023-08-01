@@ -1,8 +1,10 @@
-﻿namespace Commons.UnitOfWork
+﻿using System.Data;
+
+namespace Commons.UnitOfWork
 {
     public interface IUnitOfWorkContext
     {
-        IUnitOfWork Create();
-        Task<IUnitOfWork> CreateAsync(CancellationToken cancellationToken = default);
+        IUnitOfWork Create(IsolationLevel isolationLevel);
+        Task<IUnitOfWork> CreateAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default);
     }
 }

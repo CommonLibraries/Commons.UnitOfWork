@@ -2,7 +2,7 @@
 
 namespace Commons.UnitOfWork
 {
-    public interface IConnectionContext
+    public interface IConnectionContext: IDisposable, IAsyncDisposable
     {
         IDbConnection GetConnection();
 

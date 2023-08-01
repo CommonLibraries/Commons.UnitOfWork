@@ -14,6 +14,7 @@ namespace Commons.UnitOfWork.Extensions
         private readonly string connectionString;
 
         private IDbConnection? connection;
+        private bool disposed;
 
         public ConnectionContext(string invariantName, string connectionString)
         {
@@ -21,14 +22,11 @@ namespace Commons.UnitOfWork.Extensions
             this.connectionString = connectionString;
         }
 
-        private IDbConnection CreateConnection(string invariantName, string connectionString)
+        private IDbConnection CreateConnection()
         {
-            var dbProviderFactory = DbProviderFactories.GetFactory(invariantName);
-            var connection = dbProviderFactory.CreateConnection();
-            if (connection is null)
-            {
-                throw new NullReferenceException("Connection is null.");
-            }
+            var dbProviderFactory = DbProviderFactories.GetFactory(this.invariantName);
+            var connection = dbProviderFactory.CreateConnection() ?? 
+                throw new NullReferenceException("Created connection is null.");
             connection.ConnectionString = this.connectionString;
             return connection;
         }
@@ -37,7 +35,7 @@ namespace Commons.UnitOfWork.Extensions
         {
             if (this.connection is null)
             {
-                this.connection = this.CreateConnection(this.invariantName, this.connectionString);
+                this.connection = this.CreateConnection();
                 this.connection.Open();
             }
 
@@ -48,16 +46,52 @@ namespace Commons.UnitOfWork.Extensions
         {
             if (this.connection is null)
             {
-                this.connection = this.CreateConnection(this.invariantName, this.connectionString);
-                var connection = this.connection as DbConnection;
-                if (connection is null)
+                if (this.CreateConnection() is not DbConnection connection)
                 {
-                    throw new InvalidCastException($"The created connection does not inherit { nameof(DbConnection) } class.");
+                    throw new InvalidCastException($"The created connection does not inherit {nameof(DbConnection)} class.");
                 }
+                this.connection = connection;
+                
                 await connection.OpenAsync(cancellationToken);
             }
 
             return this.connection;
+        }
+
+        protected virtual async ValueTask DisposeAsyncCore() {
+            if (this.connection is IAsyncDisposable disposable) {
+                await disposable.DisposeAsync();
+            }
+
+            this.connection = null;
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await this.DisposeAsyncCore().ConfigureAwait(false);
+
+            Dispose(disposing: false);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    this.connection?.Dispose();
+                }
+
+                this.connection = null;
+                disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

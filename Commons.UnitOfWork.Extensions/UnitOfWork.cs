@@ -5,169 +5,99 @@ namespace Commons.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
-        public IDbConnection Connection { get; protected set; }
+        private readonly IConnectionContext connectionContext;
+        private readonly ITransactionContext transactionContext;
 
-        public IDbTransaction Transaction { get; protected set; }
+        private bool disposed;
 
-        public UnitOfWork(IDbConnection connection)
+        public UnitOfWork(IConnectionContext connectionContext, ITransactionContext transactionContext)
         {
-            this.Connection = connection;
-            if (this.Connection is null)
-            {
-                throw new ArgumentNullException(nameof(connection), "Connection is must be NOT null.");
-            }
-            this.Transaction = null!;
+            this.connectionContext = connectionContext ?? 
+                throw new ArgumentNullException(nameof(connectionContext), "ConnectionContext is must be NOT null.");
+            this.transactionContext = transactionContext ??
+                throw new ArgumentNullException(nameof(transactionContext), "TransactionContext is must be NOT null.");
         }
 
-        public IDbCommand CreateCommand(string commandText = "")
-        {
-            var command = this.Connection.CreateCommand();
-            command.Transaction = this.Transaction;
-            command.CommandText = commandText;
-            return command;
-        }
-
-        public void Begin(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
-        {
-            this.Transaction = this.Connection.BeginTransaction(isolationLevel);
-        }
-
-        public async Task BeginAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, CancellationToken cancellationToken = default)
-        {
-            var connection = this.Connection as DbConnection;
-            if (connection is null)
-            {
-                throw new NotSupportedException(
-                    $"The connection data type does not implement {typeof(DbConnection).FullName}.",
-                    new MissingMethodException("BeginTransactionAsync", this.Connection.GetType().Name));
-            }
-
-            await connection.BeginTransactionAsync(isolationLevel, cancellationToken);
-        }
+        public bool IsDisposed => this.disposed;
 
         public void Commit()
         {
-            this.Transaction.Commit();
+            var transaction = this.transactionContext.GetTransaction() ?? 
+                throw new InvalidOperationException("Transaction have not been begun yet.");
+            
+            transaction.Commit();
         }
 
         public async Task CommitAsync(CancellationToken cancellationToken = default)
         {
-            if (this.Transaction is null)
-            {
-                throw new NullReferenceException("Transaction have not been created yet.");
-            }
+            var transaction = this.transactionContext.GetTransaction() ?? 
+                throw new InvalidOperationException("Transaction have not been begun yet.");
 
-            var transaction = this.Transaction as DbTransaction;
-            if (transaction is null)
-            {
+            if (transaction is not DbTransaction dbTransaction) {
                 throw new NotSupportedException(
-                    $"The transaction data type does not implement {typeof(DbTransaction).FullName}.",
-                    new MissingMethodException("CommitAsync", this.Transaction.GetType().Name));
+                    $"The transaction type does not implement {typeof(DbTransaction).FullName}.",
+                    new MissingMethodException("The transaction type does not have CommitAsync method."));
             }
 
-            await transaction.CommitAsync(cancellationToken);
+            await dbTransaction.CommitAsync(cancellationToken);
         }
 
         public void Rollback()
         {
-            this.Transaction.Rollback();
+            var transaction = this.transactionContext.GetTransaction() ??
+                throw new InvalidOperationException("Transaction have not been begun yet.");
+            
+            transaction.Rollback();
         }
 
         public async Task RollbackAsync(CancellationToken cancellationToken = default)
         {
-            if (this.Transaction is null)
-            {
-                throw new NullReferenceException("Transaction have not been created yet.");
-            }
-
-            var transaction = this.Transaction as DbTransaction;
-            if (transaction is null)
-            {
+            var transaction = this.transactionContext.GetTransaction() ?? 
+                throw new InvalidOperationException("Transaction have not been begun yet.");
+            
+            if (transaction is not DbTransaction dbTransaction) {
                 throw new NotSupportedException(
-                    $"The transaction data type does not implement {typeof(DbTransaction).FullName}.",
-                    new MissingMethodException("RollbackAsync", this.Transaction.GetType().Name));
+                    $"The transaction type does not implement {typeof(DbTransaction).FullName}.",
+                    new MissingMethodException("The transaction type does not have RollbackAsync method."));
             }
 
-            await transaction.RollbackAsync(cancellationToken);
+            await dbTransaction.RollbackAsync(cancellationToken);
         }
 
-        private bool disposed;
         protected virtual void Dispose(bool disposing)
         {
-            if (disposed)
+            if (!disposed)
             {
-                return;
-            }
-
-            if (disposing)
-            {
-                if (this.Transaction is not null)
+                if (disposing)
                 {
-                    this.Transaction.Dispose();
+                    var transaction = this.transactionContext.GetTransaction();
+                    transaction?.Dispose();
+                    this.transactionContext.SetTransaction(null!);
                 }
 
-                this.Connection.Dispose();
+                disposed = true;
             }
-
-            // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-            // TODO: set large fields to null
-            disposed = true;
         }
-
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~UnitOfWork()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
 
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
 
-        public async ValueTask DisposeAsync()
-        {
-            await this.DisposeAsyncCore();
-            this.Dispose(false);
-            GC.SuppressFinalize(this);
+        protected virtual async ValueTask DisposeAsyncCore() {
+            if (this.transactionContext.GetTransaction() is IAsyncDisposable disposable) {
+                await disposable.DisposeAsync();
+                this.transactionContext.SetTransaction(null!);
+            }
         }
 
-        protected virtual async ValueTask DisposeAsyncCore()
+        public async ValueTask DisposeAsync()
         {
-            if (this.disposed)
-            {
-                return;
-            }
+            await DisposeAsyncCore().ConfigureAwait(false);
 
-            if (this.Transaction is not null)
-            {
-                var transaction = this.Transaction as DbTransaction;
-                if (transaction is not null)
-                {
-                    await transaction.DisposeAsync();
-                }
-                else
-                {
-                    this.Transaction.Dispose();
-                }
-            }
-
-            var connection = this.Connection as DbConnection;
-            if (connection is not null)
-            {
-                await connection.DisposeAsync();
-            }
-            else
-            {
-                this.Connection.Dispose();
-            }
-
-            this.Transaction = null!;
-            this.Connection = null!;
-            this.disposed = true;
+            Dispose(disposing: false);
+            GC.SuppressFinalize(this);
         }
     }
 }
