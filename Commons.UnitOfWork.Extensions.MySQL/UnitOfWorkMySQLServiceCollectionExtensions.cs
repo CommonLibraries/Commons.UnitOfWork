@@ -17,6 +17,7 @@ namespace Commons.UnitOfWork.Extensions.MySQL
                 .SetInvariantName("MySqlConnector")
                 .SetConnectionString(connectionString)
                 .Done();
+
             return services;
         }
     }

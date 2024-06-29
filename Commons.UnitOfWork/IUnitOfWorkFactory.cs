@@ -2,7 +2,7 @@
 
 namespace Commons.UnitOfWork
 {
-    public interface IUnitOfWorkContext
+    public interface IUnitOfWorkFactory
     {
         IUnitOfWork Create(IsolationLevel isolationLevel);
         Task<IUnitOfWork> CreateAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default);

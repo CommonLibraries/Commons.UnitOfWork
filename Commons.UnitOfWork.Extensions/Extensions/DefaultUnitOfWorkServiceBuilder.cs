@@ -29,11 +29,10 @@ namespace Commons.UnitOfWork.Extensions
 
         public IServiceCollection Done()
         {
-            services.TryAddScoped<IConnectionContext>(serviceProvider => {
-                return new ConnectionContext(this.invariantName, this.connectionString);
+            services.TryAddTransient<IConnectionFactory>(serviceProvider => {
+                return new DefaultConnectionFactory(this.invariantName, this.connectionString);
             });
-            services.TryAddScoped<ITransactionContext, TransactionContext>();
-            services.TryAddScoped<IUnitOfWorkContext, UnitOfWorkContext>();
+            services.TryAddTransient<IUnitOfWorkFactory, DefaultUnitOfWorkFactory>();
             return services;
         }
     }

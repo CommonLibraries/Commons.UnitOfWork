@@ -4,7 +4,11 @@ namespace Commons.UnitOfWork
 {
     public interface IUnitOfWork : IDisposable, IAsyncDisposable
     {
-        bool IsDisposed { get; }
+        IDbConnection Connection { get; }
+        IDbTransaction? Transaction { get; }
+
+        void Begin();
+        Task BeginAsync(CancellationToken cancellationToken = default);
 
         void Commit();
         Task CommitAsync(CancellationToken cancellationToken = default);
