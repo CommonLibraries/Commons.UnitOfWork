@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Commons.UnitOfWork\Commons.UnitOfWork.csproj" />
-    <ProjectReference Include="..\Commons.UnitOfWork.Scope\Commons.UnitOfWork.Scope.csproj" />
+    <ProjectReference Include="..\Commons.UnitOfWork.Context\Commons.UnitOfWork.Context.csproj" />
   </ItemGroup>
   
 </Project>

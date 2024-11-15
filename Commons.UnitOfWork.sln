@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Commons.UnitOfWork.Extensio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Commons.UnitOfWork.Middleware", "Commons.UnitOfWork.Middleware\Commons.UnitOfWork.Middleware.csproj", "{280FE8FF-BD92-425B-88D8-B51C4B1E89FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commons.UnitOfWork.Scope", "Commons.UnitOfWork.Scope\Commons.UnitOfWork.Scope.csproj", "{CE43EF6B-44A0-4AC7-ADA6-B23C239B21C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commons.UnitOfWork.Context", "Commons.UnitOfWork.Context\Commons.UnitOfWork.Context.csproj", "{CE43EF6B-44A0-4AC7-ADA6-B23C239B21C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

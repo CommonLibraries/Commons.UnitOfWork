@@ -1,8 +1,8 @@
 ﻿using System.Data;
 
-namespace Commons.UnitOfWork.Scope
+namespace Commons.UnitOfWork.Context
 {
-    public interface ITransactionScope
+    public interface ITransactionContext
     {
         IDbTransaction? Current { get; }
     }

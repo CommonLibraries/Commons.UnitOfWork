@@ -1,4 +1,4 @@
-﻿using Commons.UnitOfWork.Scope;
+﻿using Commons.UnitOfWork.Context;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -35,12 +35,12 @@ namespace Commons.UnitOfWork.Middleware.Extensions
         public IServiceCollection Done()
         {
             services.TryAddScoped<DefaultUnitOfWorkScope>();
-            services.TryAddScoped<IUnitOfWorkScope>(serviceProvider =>
+            services.TryAddScoped<IUnitOfWorkContext>(serviceProvider =>
             {
                 return serviceProvider.GetRequiredService<DefaultUnitOfWorkScope>();
             });
-            services.TryAddScoped<IConnectionScope, DefaultConnectionScope>();
-            services.TryAddScoped<ITransactionScope, DefaultTransactionScope>();
+            services.TryAddScoped<IConnectionContext, DefaultConnectionScope>();
+            services.TryAddScoped<ITransactionContext, DefaultTransactionScope>();
             services.AddTransient<UnitOfWorkMiddleware>();
             return services;
         }

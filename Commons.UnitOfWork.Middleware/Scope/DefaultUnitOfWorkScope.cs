@@ -1,11 +1,11 @@
-﻿using Commons.UnitOfWork.Scope;
+﻿using Commons.UnitOfWork.Context;
 using Microsoft.Extensions.DependencyInjection;
 using System.Data;
 using System.Data.Common;
 
-namespace Commons.UnitOfWork.Scope
+namespace Commons.UnitOfWork.Context
 {
-    internal class DefaultUnitOfWorkScope : IUnitOfWorkScope
+    internal class DefaultUnitOfWorkScope : IUnitOfWorkContext
     {
         private IUnitOfWork? unitOfWork;
         public IUnitOfWork Current

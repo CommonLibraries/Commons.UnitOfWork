@@ -1,12 +1,12 @@
 ﻿using System.Data;
-using Commons.UnitOfWork.Scope;
+using Commons.UnitOfWork.Context;
 
-namespace Commons.UnitOfWork.Scope
+namespace Commons.UnitOfWork.Context
 {
-    internal class DefaultConnectionScope : IConnectionScope
+    internal class DefaultConnectionScope : IConnectionContext
     {
-        private readonly IUnitOfWorkScope scopedUnitOfWork;
-        public DefaultConnectionScope(IUnitOfWorkScope scopedUnitOfWork)
+        private readonly IUnitOfWorkContext scopedUnitOfWork;
+        public DefaultConnectionScope(IUnitOfWorkContext scopedUnitOfWork)
         {
             this.scopedUnitOfWork = scopedUnitOfWork;
         }

@@ -1,12 +1,12 @@
 ﻿using System.Data;
-using Commons.UnitOfWork.Scope;
+using Commons.UnitOfWork.Context;
 
-namespace Commons.UnitOfWork.Scope
+namespace Commons.UnitOfWork.Context
 {
-    internal class DefaultTransactionScope : ITransactionScope
+    internal class DefaultTransactionScope : ITransactionContext
     {
-        private readonly IUnitOfWorkScope scopedUnitOfWork;
-        public DefaultTransactionScope(IUnitOfWorkScope scopedUnitOfWork)
+        private readonly IUnitOfWorkContext scopedUnitOfWork;
+        public DefaultTransactionScope(IUnitOfWorkContext scopedUnitOfWork)
         {
             this.scopedUnitOfWork = scopedUnitOfWork;
         }
