@@ -6,23 +6,30 @@ namespace Commons.UnitOfWork.Middleware
 {
     internal class UnitOfWorkMiddleware : IMiddleware
     {
-        private readonly DefaultUnitOfWorkScope scopedUnitOfWork;
+        private readonly IUnitOfWorkContext unitOfWorkContext;
         private readonly IUnitOfWorkFactory unitOfWorkFactory;
         private readonly UnitOfWorkMiddlewareOptions options;
         public UnitOfWorkMiddleware(
-            DefaultUnitOfWorkScope scopedUnitOfWork,
+            IUnitOfWorkContext unitOfWorkContext,
             IUnitOfWorkFactory unitOfWorkFactory,
             IOptions<UnitOfWorkMiddlewareOptions> options)
         {
-            this.scopedUnitOfWork = scopedUnitOfWork;
+            this.unitOfWorkContext = unitOfWorkContext;
             this.unitOfWorkFactory = unitOfWorkFactory;
             this.options = options.Value;
         }
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            var unitOfWork = await this.unitOfWorkFactory.CreateAsync(this.options.IsolationLevel, context.RequestAborted);
-            this.scopedUnitOfWork.Current = unitOfWork;
+            var unitOfWork = await this.unitOfWorkFactory.CreateAsync(
+                this.options.IsolationLevel,
+                context.RequestAborted);
+
+            var defaultUnitOfWorkContext = this.unitOfWorkContext as DefaultUnitOfWorkContext;
+            if (defaultUnitOfWorkContext is not null)
+            {
+                defaultUnitOfWorkContext.Current = unitOfWork;
+            }
 
             await unitOfWork.BeginAsync(context.RequestAborted);
             await next(context);

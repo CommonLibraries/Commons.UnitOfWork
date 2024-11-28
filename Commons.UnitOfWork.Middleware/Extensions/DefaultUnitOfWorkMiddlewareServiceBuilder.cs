@@ -34,13 +34,9 @@ namespace Commons.UnitOfWork.Middleware.Extensions
 
         public IServiceCollection Done()
         {
-            services.TryAddScoped<DefaultUnitOfWorkScope>();
-            services.TryAddScoped<IUnitOfWorkContext>(serviceProvider =>
-            {
-                return serviceProvider.GetRequiredService<DefaultUnitOfWorkScope>();
-            });
-            services.TryAddScoped<IConnectionContext, DefaultConnectionScope>();
-            services.TryAddScoped<ITransactionContext, DefaultTransactionScope>();
+            services.TryAddScoped<IUnitOfWorkContext, DefaultUnitOfWorkContext>();
+            services.TryAddScoped<IConnectionContext, DefaultConnectionContext>();
+            services.TryAddScoped<ITransactionContext, DefaultTransactionContext>();
             services.AddTransient<UnitOfWorkMiddleware>();
             return services;
         }
