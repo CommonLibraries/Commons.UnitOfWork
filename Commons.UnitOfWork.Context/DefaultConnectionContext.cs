@@ -2,7 +2,7 @@
 
 namespace Commons.UnitOfWork.Context
 {
-    internal class DefaultConnectionContext : IConnectionContext
+    public class DefaultConnectionContext : IConnectionContext
     {
         private readonly IUnitOfWorkContext unitOfWorkContext;
         public DefaultConnectionContext(IUnitOfWorkContext unitOfWorkContext)

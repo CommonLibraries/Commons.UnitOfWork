@@ -2,7 +2,7 @@
 
 namespace Commons.UnitOfWork.Context
 {
-    internal class DefaultTransactionContext : ITransactionContext
+    public class DefaultTransactionContext : ITransactionContext
     {
         private readonly IUnitOfWorkContext unitOfWorkContext;
         public DefaultTransactionContext(IUnitOfWorkContext unitOfWorkContext)

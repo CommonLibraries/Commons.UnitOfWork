@@ -1,12 +1,12 @@
 ﻿namespace Commons.UnitOfWork.Context
 {
-    internal class DefaultUnitOfWorkContext : IUnitOfWorkContext
+    public class DefaultUnitOfWorkContext : IUnitOfWorkContext
     {
         private IUnitOfWork? unitOfWork;
         public IUnitOfWork Current
         {
             get => unitOfWork ?? throw new InvalidOperationException();
-            internal set => unitOfWork = value;
+            set => unitOfWork = value;
         }
 
         private bool disposed;

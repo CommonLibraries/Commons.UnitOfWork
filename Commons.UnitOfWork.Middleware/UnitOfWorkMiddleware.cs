@@ -21,19 +21,20 @@ namespace Commons.UnitOfWork.Middleware
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            var unitOfWork = await this.unitOfWorkFactory.CreateAsync(
+            await using (var unitOfWork = await this.unitOfWorkFactory.CreateAsync(
                 this.options.IsolationLevel,
-                context.RequestAborted);
-
-            var defaultUnitOfWorkContext = this.unitOfWorkContext as DefaultUnitOfWorkContext;
-            if (defaultUnitOfWorkContext is not null)
+                context.RequestAborted))
             {
-                defaultUnitOfWorkContext.Current = unitOfWork;
-            }
+                var defaultUnitOfWorkContext = this.unitOfWorkContext as DefaultUnitOfWorkContext;
+                if (defaultUnitOfWorkContext is not null)
+                {
+                    defaultUnitOfWorkContext.Current = unitOfWork;
+                }
 
-            await unitOfWork.BeginAsync(context.RequestAborted);
-            await next(context);
-            await unitOfWork.CommitAsync(context.RequestAborted);
+                await unitOfWork.BeginAsync(context.RequestAborted);
+                await next(context);
+                await unitOfWork.CommitAsync(context.RequestAborted);
+            }
         }
     }
 }
