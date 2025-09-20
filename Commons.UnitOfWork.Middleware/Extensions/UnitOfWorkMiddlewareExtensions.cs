@@ -1,12 +1,19 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Commons.UnitOfWork.Context;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Commons.UnitOfWork.Middleware.Extensions
 {
     public static class UnitOfWorkMiddlewareExtensions
     {
-        public static IUnitOfWorkMiddlewareServiceBuilder SetupUnitOfWorkMiddleware(this IServiceCollection services)
+        public static IUnitOfWorkMiddlewareServiceBuilder AddUnitOfWorkMiddleware(this IServiceCollection services)
         {
+            services.TryAddScoped<IUnitOfWorkContext, DefaultUnitOfWorkContext>();
+            services.TryAddScoped<IConnectionContext, DefaultConnectionContext>();
+            services.TryAddScoped<ITransactionContext, DefaultTransactionContext>();
+            services.AddTransient<UnitOfWorkMiddleware>();
+            
             return new DefaultUnitOfWorkMiddlewareServiceBuilder(services);
         }
 

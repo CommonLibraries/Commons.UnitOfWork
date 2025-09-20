@@ -8,6 +8,5 @@ namespace Commons.UnitOfWork.Middleware.Extensions
     {
         IUnitOfWorkMiddlewareServiceBuilder SetDefaultIsolationLevel(IsolationLevel isolationLevel);
         IUnitOfWorkMiddlewareServiceBuilder SetOptions(IConfigurationSection configurationSection);
-        IServiceCollection Done();
     }
 }

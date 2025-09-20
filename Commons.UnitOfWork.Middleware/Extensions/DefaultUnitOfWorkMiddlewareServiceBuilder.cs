@@ -31,14 +31,5 @@ namespace Commons.UnitOfWork.Middleware.Extensions
 
             return this;
         }
-
-        public IServiceCollection Done()
-        {
-            services.TryAddScoped<IUnitOfWorkContext, DefaultUnitOfWorkContext>();
-            services.TryAddScoped<IConnectionContext, DefaultConnectionContext>();
-            services.TryAddScoped<ITransactionContext, DefaultTransactionContext>();
-            services.AddTransient<UnitOfWorkMiddleware>();
-            return services;
-        }
     }
 }
