@@ -2,7 +2,7 @@
 
 namespace Commons.UnitOfWork.Context
 {
-    public interface IUnitOfWorkContext : IDisposable, IAsyncDisposable
+    public interface IUnitOfWorkContext
     {
         IUnitOfWork Current { get; }
     }

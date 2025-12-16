@@ -6,7 +6,8 @@ namespace Commons.UnitOfWork.Middleware.Extensions
 {
     public interface IUnitOfWorkMiddlewareServiceBuilder
     {
-        IUnitOfWorkMiddlewareServiceBuilder SetDefaultIsolationLevel(IsolationLevel isolationLevel);
         IUnitOfWorkMiddlewareServiceBuilder SetOptions(IConfigurationSection configurationSection);
+        IUnitOfWorkMiddlewareServiceBuilder SetDefaultIsolationLevel(IsolationLevel isolationLevel);
+        IUnitOfWorkMiddlewareServiceBuilder AddDatabaseContext(string databaseContextKey, string invariantName, string connectionString);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Commons.Database.ConnectionFactory;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Data;
 
@@ -8,7 +9,12 @@ namespace Commons.UnitOfWork.Extensions
     {
         public static IUnitOfWorkServiceBuilder AddUnitOfWork(this IServiceCollection services)
         {
-            return new DefaultUnitOfWorkServiceBuilder(services);
+            var databaseContexts = new Dictionary<string, DatabaseContextOptions>();
+            services.TryAddTransient<IConnectionFactory>(serviceProvider => {
+                return new DefaultConnectionFactory(databaseContexts);
+            });
+            services.TryAddTransient<IUnitOfWorkFactory, DefaultUnitOfWorkFactory>();
+            return new DefaultUnitOfWorkServiceBuilder(services, databaseContexts);
         }
     }
 }

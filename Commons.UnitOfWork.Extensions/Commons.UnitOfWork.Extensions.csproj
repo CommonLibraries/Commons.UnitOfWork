@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Commons.UnitOfWork\Commons.UnitOfWork.csproj" />
+    <ProjectReference Include="..\Commons.UnitOfWork.Context\Commons.UnitOfWork.Context.csproj" />
+    <ProjectReference Include="..\..\Commons.Database\Commons.Database.Extensions\Commons.Database.Extensions.csproj" />
   </ItemGroup>
 
 </Project>

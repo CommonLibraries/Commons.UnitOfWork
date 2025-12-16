@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Commons.UnitOfWork", "Commo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Commons.UnitOfWork.Extensions", "Commons.UnitOfWork.Extensions\Commons.UnitOfWork.Extensions.csproj", "{2A1F0AC6-EBC0-4C26-B359-D360B665992F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Commons.UnitOfWork.Extensions.MySQL", "Commons.UnitOfWork.Extensions.MySQL\Commons.UnitOfWork.Extensions.MySQL.csproj", "{04D56698-7EDF-415A-BCED-223560260828}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Commons.UnitOfWork.Middleware", "Commons.UnitOfWork.Middleware\Commons.UnitOfWork.Middleware.csproj", "{280FE8FF-BD92-425B-88D8-B51C4B1E89FA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commons.UnitOfWork.Context", "Commons.UnitOfWork.Context\Commons.UnitOfWork.Context.csproj", "{CE43EF6B-44A0-4AC7-ADA6-B23C239B21C6}"
@@ -27,10 +25,6 @@ Global
 		{2A1F0AC6-EBC0-4C26-B359-D360B665992F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A1F0AC6-EBC0-4C26-B359-D360B665992F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A1F0AC6-EBC0-4C26-B359-D360B665992F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{04D56698-7EDF-415A-BCED-223560260828}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{04D56698-7EDF-415A-BCED-223560260828}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{04D56698-7EDF-415A-BCED-223560260828}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{04D56698-7EDF-415A-BCED-223560260828}.Release|Any CPU.Build.0 = Release|Any CPU
 		{280FE8FF-BD92-425B-88D8-B51C4B1E89FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{280FE8FF-BD92-425B-88D8-B51C4B1E89FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{280FE8FF-BD92-425B-88D8-B51C4B1E89FA}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Commons.Database.ConnectionFactory;
+using Microsoft.Extensions.DependencyInjection;
 using System.Data;
 using System.Data.Common;
 
@@ -13,7 +14,7 @@ namespace Commons.UnitOfWork
             this.connectionFactory = connectionFactory;
         }
 
-        public IUnitOfWork Create(IsolationLevel isolationLevel)
+        public IUnitOfWork Create(IsolationLevel isolationLevel, string? databaseContextKey = null)
         {
             if (this.connectionFactory.Open() is not DbConnection connection)
             {
@@ -24,9 +25,9 @@ namespace Commons.UnitOfWork
             return unitOfWork;
         }
 
-        public async Task<IUnitOfWork> CreateAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
+        public async Task<IUnitOfWork> CreateAsync(IsolationLevel isolationLevel, string? databaseContextKey = null, CancellationToken cancellationToken = default)
         {
-            if (await this.connectionFactory.OpenAsync(cancellationToken)
+            if (await this.connectionFactory.OpenAsync(databaseContextKey, cancellationToken)
                         is not DbConnection connection)
             {
                 throw new InvalidCastException($"The connection does not inherit {nameof(DbConnection)} class.");

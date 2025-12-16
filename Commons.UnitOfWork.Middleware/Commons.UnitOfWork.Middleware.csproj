@@ -11,8 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Commons.UnitOfWork\Commons.UnitOfWork.csproj" />
-    <ProjectReference Include="..\Commons.UnitOfWork.Context\Commons.UnitOfWork.Context.csproj" />
+    <ProjectReference Include="..\Commons.UnitOfWork.Extensions\Commons.UnitOfWork.Extensions.csproj" />
   </ItemGroup>
   
 </Project>

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Commons.Database.ConnectionFactory;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Commons.UnitOfWork.Extensions
@@ -6,34 +7,24 @@ namespace Commons.UnitOfWork.Extensions
     public class DefaultUnitOfWorkServiceBuilder : IUnitOfWorkServiceBuilder
     {
         protected IServiceCollection services;
-        
-        protected string invariantName = null!;
-        protected string connectionString = null!;
-        
-        public DefaultUnitOfWorkServiceBuilder(IServiceCollection services)
+        protected IDictionary<string, DatabaseContextOptions> databaseContexts;
+
+        public DefaultUnitOfWorkServiceBuilder(
+            IServiceCollection services,
+            IDictionary<string, DatabaseContextOptions> databaseContexts)
         {
             this.services = services;
+            this.databaseContexts = databaseContexts;
         }
 
-        public IUnitOfWorkServiceBuilder SetConnectionString(string connectionString)
+        public IUnitOfWorkServiceBuilder AddDatabaseContext(string databaseContextKey, string invariantName, string connectionString)
         {
-            this.connectionString = connectionString;
-            return this;
-        }
-
-        public IUnitOfWorkServiceBuilder SetInvariantName(string invariantName)
-        {
-            this.invariantName = invariantName;
-            return this;
-        }
-
-        public IServiceCollection Done()
-        {
-            services.TryAddTransient<IConnectionFactory>(serviceProvider => {
-                return new DefaultConnectionFactory(this.invariantName, this.connectionString);
+            this.databaseContexts.Add(databaseContextKey, new DatabaseContextOptions
+            {
+                InvariantName = invariantName,
+                ConnectionString = connectionString
             });
-            services.TryAddTransient<IUnitOfWorkFactory, DefaultUnitOfWorkFactory>();
-            return services;
+            return this;
         }
     }
 }
