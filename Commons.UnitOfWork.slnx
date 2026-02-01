@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Commons.UnitOfWork.Context/Commons.UnitOfWork.Context.csproj" />
+  <Project Path="Commons.UnitOfWork.Extensions/Commons.UnitOfWork.Extensions.csproj" />
+  <Project Path="Commons.UnitOfWork.Middleware/Commons.UnitOfWork.Middleware.csproj" />
+  <Project Path="Commons.UnitOfWork/Commons.UnitOfWork.csproj" />
+</Solution>
