@@ -7,8 +7,8 @@ namespace Commons.UnitOfWork
     {
         private IDbConnection? connection;
         private readonly IsolationLevel isolationLevel;
-
         private IDbTransaction? transaction;
+        private UnitOfWorkStatus status = UnitOfWorkStatus.NotStarted;
 
         public DefaultUnitOfWork(
             IDbConnection connection,
@@ -25,6 +25,7 @@ namespace Commons.UnitOfWork
 
         public IDbConnection Connection => this.connection ?? throw new InvalidOperationException();
         public IDbTransaction? Transaction => this.transaction;
+        public UnitOfWorkStatus Status => this.status;
 
         public void Begin()
         {
@@ -34,6 +35,7 @@ namespace Commons.UnitOfWork
             }
 
             this.transaction = this.connection.BeginTransaction(this.isolationLevel);
+            this.status = UnitOfWorkStatus.Active;
         }
 
         public async Task BeginAsync(CancellationToken cancellationToken = default)
@@ -45,6 +47,7 @@ namespace Commons.UnitOfWork
             }
 
             this.transaction = await connection.BeginTransactionAsync(this.isolationLevel, cancellationToken);
+            this.status = UnitOfWorkStatus.Active;
         }
 
         public void Commit()
@@ -55,6 +58,7 @@ namespace Commons.UnitOfWork
             }
 
             this.transaction.Commit();
+            this.status = UnitOfWorkStatus.Committed;
         }
 
         public async Task CommitAsync(CancellationToken cancellationToken = default)
@@ -72,6 +76,7 @@ namespace Commons.UnitOfWork
             }
 
             await transaction.CommitAsync(cancellationToken);
+            this.status = UnitOfWorkStatus.Committed;
         }
 
         public void Rollback()
@@ -82,6 +87,7 @@ namespace Commons.UnitOfWork
             }
 
             this.transaction.Rollback();
+            this.status = UnitOfWorkStatus.RolledBack;
         }
 
         public async Task RollbackAsync(CancellationToken cancellationToken = default)
@@ -99,6 +105,7 @@ namespace Commons.UnitOfWork
             }
 
             await transaction.RollbackAsync(cancellationToken);
+            this.status = UnitOfWorkStatus.RolledBack;
         }
 
         private bool disposed;
