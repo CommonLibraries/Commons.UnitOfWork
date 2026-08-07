@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using System.Data.Common;
 
 namespace Commons.UnitOfWork
@@ -9,16 +9,18 @@ namespace Commons.UnitOfWork
         private readonly IsolationLevel isolationLevel;
         private IDbTransaction? transaction;
         private UnitOfWorkStatus status = UnitOfWorkStatus.NotStarted;
+        private readonly string? contextKey;
 
         public DefaultUnitOfWork(
             IDbConnection connection,
-            IsolationLevel isolationLevel)
+            IsolationLevel isolationLevel,
+            string? contextKey = null)
         {
+            this.contextKey = contextKey;
             if (connection is null)
             {
                 throw new ArgumentNullException(nameof(connection), "Connection is must be NOT null.");
             }
-
             this.connection = connection;
             this.isolationLevel = isolationLevel;
         }
@@ -26,6 +28,7 @@ namespace Commons.UnitOfWork
         public IDbConnection Connection => this.connection ?? throw new InvalidOperationException();
         public IDbTransaction? Transaction => this.transaction;
         public UnitOfWorkStatus Status => this.status;
+        public string? ContextKey => this.contextKey;
 
         public void Begin()
         {

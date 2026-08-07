@@ -1,9 +1,10 @@
-﻿using System.Data;
+using System.Data;
 
 namespace Commons.UnitOfWork;
 
 public interface IUnitOfWork : IDisposable, IAsyncDisposable
 {
+    string? ContextKey { get; }
     IDbConnection Connection { get; }
     IDbTransaction? Transaction { get; }
     UnitOfWorkStatus Status { get; }
