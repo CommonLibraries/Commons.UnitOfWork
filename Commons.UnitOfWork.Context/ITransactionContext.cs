@@ -1,9 +1,8 @@
-﻿using System.Data;
+using System.Data;
 
-namespace Commons.UnitOfWork.Context
+namespace Commons.UnitOfWork.Context;
+
+public interface ITransactionContext
 {
-    public interface ITransactionContext
-    {
-        IDbTransaction? Current { get;  }
-    }
+    IDbTransaction? Current { get;  }
 }

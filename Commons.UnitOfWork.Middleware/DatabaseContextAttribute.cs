@@ -1,12 +1,11 @@
-namespace Commons.UnitOfWork.Middleware
-{
-    public class DatabaseContextAttribute : Attribute
-    {
-        public string DatabaseContextKey { get; }
+namespace Commons.UnitOfWork.Middleware;
 
-        public DatabaseContextAttribute(string databaseContextKey)
-        {
-            this.DatabaseContextKey = databaseContextKey;
-        }
+public class DatabaseContextAttribute : Attribute
+{
+    public string DatabaseContextKey { get; }
+
+    public DatabaseContextAttribute(string databaseContextKey)
+    {
+        this.DatabaseContextKey = databaseContextKey;
     }
 }

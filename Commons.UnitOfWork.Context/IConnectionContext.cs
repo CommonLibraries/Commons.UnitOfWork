@@ -1,9 +1,8 @@
-﻿using System.Data;
+using System.Data;
 
-namespace Commons.UnitOfWork.Context
+namespace Commons.UnitOfWork.Context;
+
+public interface IConnectionContext
 {
-    public interface IConnectionContext
-    {
-        IDbConnection Current { get; }
-    }
+    IDbConnection Current { get; }
 }

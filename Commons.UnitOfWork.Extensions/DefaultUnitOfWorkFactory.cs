@@ -1,5 +1,6 @@
 using Commons.Database.ConnectionFactory;
-using Microsoft.Extensions.DependencyInjection;
+using Commons.UnitOfWork.Extensions.TransactionInterceptors;
+using Commons.UnitOfWork.TransactionInterceptors;
 using System.Data;
 using System.Data.Common;
 
@@ -8,10 +9,13 @@ namespace Commons.UnitOfWork;
 internal class DefaultUnitOfWorkFactory : IUnitOfWorkFactory
 {
     private readonly IConnectionFactory connectionFactory;
+    private readonly IList<ITransactionInterceptor> transactionInterceptors;
 
-    public DefaultUnitOfWorkFactory(IConnectionFactory connectionFactory)
+    public DefaultUnitOfWorkFactory(IConnectionFactory connectionFactory,
+        IEnumerable<ITransactionInterceptor> transactionInterceptors)
     {
         this.connectionFactory = connectionFactory;
+        this.transactionInterceptors = transactionInterceptors.ToList();
     }
 
     public IUnitOfWork Create(IsolationLevel isolationLevel, string? databaseContextKey = null)
@@ -22,7 +26,8 @@ internal class DefaultUnitOfWorkFactory : IUnitOfWorkFactory
         }
 
         var unitOfWork = new DefaultUnitOfWork(connection, isolationLevel, databaseContextKey);
-        return unitOfWork;
+        var unitOfWorkWithTransactionInterceptors = new DefaultUnitOfWorkWithTransactionInterceptors(unitOfWork, this.transactionInterceptors);
+        return unitOfWorkWithTransactionInterceptors;
     }
 
     public async Task<IUnitOfWork> CreateAsync(IsolationLevel isolationLevel, string? databaseContextKey = null, CancellationToken cancellationToken = default)
@@ -34,6 +39,7 @@ internal class DefaultUnitOfWorkFactory : IUnitOfWorkFactory
         }
 
         var unitOfWork = new DefaultUnitOfWork(connection, isolationLevel, databaseContextKey);
-        return unitOfWork;
+        var unitOfWorkWithTransactionInterceptors = new DefaultUnitOfWorkWithTransactionInterceptors(unitOfWork, this.transactionInterceptors);
+        return unitOfWorkWithTransactionInterceptors;
     }
 }

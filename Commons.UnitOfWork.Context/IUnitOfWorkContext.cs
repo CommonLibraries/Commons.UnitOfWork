@@ -1,9 +1,8 @@
-﻿using System.Data.Common;
+using System.Data.Common;
 
-namespace Commons.UnitOfWork.Context
+namespace Commons.UnitOfWork.Context;
+
+public interface IUnitOfWorkContext
 {
-    public interface IUnitOfWorkContext
-    {
-        IUnitOfWork Current { get; }
-    }
+    IUnitOfWork? Current { get; }
 }

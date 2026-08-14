@@ -1,9 +1,8 @@
-﻿using System.Data;
+using System.Data;
 
-namespace Commons.UnitOfWork.Middleware
+namespace Commons.UnitOfWork.Middleware;
+
+public class UnitOfWorkMiddlewareOptions
 {
-    public class UnitOfWorkMiddlewareOptions
-    {
-        public IsolationLevel IsolationLevel { get; set; } = IsolationLevel.ReadCommitted;
-    }
+    public IsolationLevel IsolationLevel { get; set; } = IsolationLevel.ReadCommitted;
 }

@@ -1,7 +1,6 @@
-namespace Commons.UnitOfWork.Context
+namespace Commons.UnitOfWork.Context;
+
+public interface IMutableUnitOfWorkContext : IUnitOfWorkContext
 {
-    public interface IMutableUnitOfWorkContext : IUnitOfWorkContext
-    {
-        new IUnitOfWork Current { get; set; }
-    }
+    new IUnitOfWork? Current { get; set; }
 }
